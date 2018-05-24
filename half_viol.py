@@ -629,10 +629,6 @@ half_violinplot.__doc__ = dedent("""\
         draw a miniature boxplot. If ``quartiles``, draw the quartiles of the
         distribution.  If ``point`` or ``stick``, show each underlying
         datapoint. Using ``None`` will draw unadorned violins.
-    split : bool, optional
-        When using hue nesting with a variable that takes two levels, setting
-        ``split`` to True will draw half of a violin for each level. This can
-        make it easier to directly compare the distributions.
     {dodge}
     {orient}
     {linewidth}
@@ -643,97 +639,48 @@ half_violinplot.__doc__ = dedent("""\
     Returns
     -------
     {ax_out}
-    See Also
-    --------
-    {boxplot}
-    {stripplot}
-    {swarmplot}
+
     Examples
     --------
     Draw a single horizontal violinplot:
     .. plot::
         :context: close-figs
         >>> import seaborn as sns
+        >>> import halfviol as hv
         >>> sns.set_style("whitegrid")
         >>> tips = sns.load_dataset("tips")
-        >>> ax = sns.violinplot(x=tips["total_bill"])
+        >>> ax = hv.half_violinplot(x=tips["total_bill"])
     Draw a vertical violinplot grouped by a categorical variable:
     .. plot::
         :context: close-figs
-        >>> ax = sns.violinplot(x="day", y="total_bill", data=tips)
+        >>> ax = hv.half_violinplot(x="day", y="total_bill", data=tips)
     Draw a violinplot with nested grouping by two categorical variables:
     .. plot::
         :context: close-figs
-        >>> ax = sns.violinplot(x="day", y="total_bill", hue="smoker",
+        >>> ax = hv.half_violinplot(x="day", y="total_bill", hue="smoker",
         ...                     data=tips, palette="muted")
-    Draw split violins to compare the across the hue variable:
-    .. plot::
-        :context: close-figs
-        >>> ax = sns.violinplot(x="day", y="total_bill", hue="smoker",
-        ...                     data=tips, palette="muted", split=True)
     Control violin order by passing an explicit order:
     .. plot::
         :context: close-figs
-        >>> ax = sns.violinplot(x="time", y="tip", data=tips,
+        >>> ax = hv.half_violinplot(x="time", y="tip", data=tips,
         ...                     order=["Dinner", "Lunch"])
-    Scale the violin width by the number of observations in each bin:
-    .. plot::
-        :context: close-figs
-        >>> ax = sns.violinplot(x="day", y="total_bill", hue="sex",
-        ...                     data=tips, palette="Set2", split=True,
-        ...                     scale="count")
-    Draw the quartiles as horizontal lines instead of a mini-box:
-    .. plot::
-        :context: close-figs
-        >>> ax = sns.violinplot(x="day", y="total_bill", hue="sex",
-        ...                     data=tips, palette="Set2", split=True,
-        ...                     scale="count", inner="quartile")
-    Show each observation with a stick inside the violin:
-    .. plot::
-        :context: close-figs
-        >>> ax = sns.violinplot(x="day", y="total_bill", hue="sex",
-        ...                     data=tips, palette="Set2", split=True,
-        ...                     scale="count", inner="stick")
-    Scale the density relative to the counts across all bins:
-    .. plot::
-        :context: close-figs
-        >>> ax = sns.violinplot(x="day", y="total_bill", hue="sex",
-        ...                     data=tips, palette="Set2", split=True,
-        ...                     scale="count", inner="stick", scale_hue=False)
-    Use a narrow bandwidth to reduce the amount of smoothing:
-    .. plot::
-        :context: close-figs
-        >>> ax = sns.violinplot(x="day", y="total_bill", hue="sex",
-        ...                     data=tips, palette="Set2", split=True,
-        ...                     scale="count", inner="stick",
-        ...                     scale_hue=False, bw=.2)
     Draw horizontal violins:
     .. plot::
         :context: close-figs
         >>> planets = sns.load_dataset("planets")
-        >>> ax = sns.violinplot(x="orbital_period", y="method",
+        >>> ax = hv.half_violinplot(x="orbital_period", y="method",
         ...                     data=planets[planets.orbital_period < 1000],
         ...                     scale="width", palette="Set3")
     Don't let density extend past extreme values in the data:
     .. plot::
         :context: close-figs
-        >>> ax = sns.violinplot(x="orbital_period", y="method",
+        >>> ax = hv.half_violinplot(x="orbital_period", y="method",
         ...                     data=planets[planets.orbital_period < 1000],
         ...                     cut=0, scale="width", palette="Set3")
     Use ``hue`` without changing violin position or width:
     .. plot::
         :context: close-figs
         >>> tips["weekend"] = tips["day"].isin(["Sat", "Sun"])
-        >>> ax = sns.violinplot(x="day", y="total_bill", hue="weekend",
+        >>> ax = hv.half_.violinplot(x="day", y="total_bill", hue="weekend",
         ...                     data=tips, dodge=False)
-    Use :func:`factorplot` to combine a :func:`violinplot` and a
-    :class:`FacetGrid`. This allows grouping within additional categorical
-    variables. Using :func:`factorplot` is safer than using :class:`FacetGrid`
-    directly, as it ensures synchronization of variable order across facets:
-    .. plot::
-        :context: close-figs
-        >>> g = sns.factorplot(x="sex", y="total_bill",
-        ...                    hue="smoker", col="time",
-        ...                    data=tips, kind="violin", split=True,
-        ...                    size=4, aspect=.7);
     """).format(**_categorical_docs)
