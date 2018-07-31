@@ -11,7 +11,7 @@ I found a [tweet](https://twitter.com/flxrue/status/974639616912478210) asking f
 
 ---
 
-Then I tried to replicate the plots from the [original post]([Micah Hallen](https://micahallen.org/2018/03/15/introducing-raincloud-plots/)), using Jupyter.
+Then I tried to replicate the plots from the original post by [Micah Hallen](https://micahallen.org/2018/03/15/introducing-raincloud-plots/), using Jupyter.
 
 ## Plans for the future:
 
