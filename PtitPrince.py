@@ -8,6 +8,7 @@ import matplotlib as mpl
 from matplotlib.collections import PatchCollection
 import matplotlib.patches as Patches
 import matplotlib.pyplot as plt
+import matplotlib.collections as clt
 import warnings
 
 import seaborn as sns
@@ -304,8 +305,8 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
                 # Draw the violin for this group
                 grid = np.ones(self.gridsize) * i
                 fill_func(support,
-                          -.15+grid - density * self.dwidth,
-                          -.15+grid,
+                          -.15 + grid - density * self.dwidth,
+                          -.15 + grid,
                           facecolor=self.colors[i],
                           **kws)
 
@@ -361,20 +362,20 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
                         continue
 
                     # Option 2a: we are drawing a single split violin
-                    # -----------------------------------------------
-
+                    # -----------------------------------------------                              
+                    
                     if self.split:
 
                         grid = np.ones(self.gridsize) * i
                         if j:
                             fill_func(support,
-                                      grid,
-                                      grid + density * self.dwidth,
+                                      -.15 + grid - density * self.dwidth,
+                                      -.15 + grid,
                                       **kws)
                         else:
                             fill_func(support,
-                                      grid - density * self.dwidth,
-                                      grid,
+                                      -.15 + grid - density * self.dwidth,
+                                      -.15 + grid,
                                       **kws)
 
                         # Draw the interior representation of the data
@@ -420,8 +421,8 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
                     else:
                         grid = np.ones(self.gridsize) * (i + offsets[j])
                         fill_func(support,
-                                  grid - density * self.dwidth,
-                                  grid + density * self.dwidth,
+                                  -.15 + grid - density * self.dwidth,
+                                  -.15 + grid,
                                   **kws)
 
                         # Draw the interior representation
@@ -583,21 +584,40 @@ def half_violinplot(x=None, y=None, hue=None, data=None, order=None, hue_order=N
     return ax
 
 
-def RainCloud(data, x, y, orient = "v", width_viol = .7, width_box = .15,
+def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7, width_box = .15,
               palette = "Set2", bw = .2, linewidth = 1, cut = 0., scale = "area",
-             color = None, ax = None, figsize = (12, 11)):
+             color = None, ax = None, figsize = (12, 11), pointplot = False, alpha = None):
     '''Draw a Raincloud plot of measure 'y' of different caetgories 'x'. Here 'x' and 'y' different columns of the pandas dataframe 'data'.'''
 
     if orient == 'h': #swap x and y
         x, y = y, x
     if ax is None:
         f, ax = plt.subplots(figsize = figsize)
-    ax = half_violinplot(data = data, x = x, y = y, orient = orient, width = width_viol, inner = None,\
-                         palette = palette, bw = bw,  linewidth = linewidth, cut = cut, scale = scale)
-    ax =  sns.stripplot (data = data, x = x, y = y, orient = orient, palette = palette,\
-                         edgecolor = "white", size = 2, jitter = 1, zorder = 0)
-    ax =  sns.boxplot   (data = data, x = x, y = y, orient = orient, width = width_box, \
-                color = "black", zorder = 10, showcaps = True, boxprops = {'facecolor':'none', "zorder":10},\
+    
+    split=False; boxcolor = "black"
+    boxprops = {'facecolor':'none', "zorder":10}
+    if not hue is None:
+        split = True
+        boxcolor = palette
+        boxprops = {"zorder":10}
+    
+    ax = half_violinplot(x = x, y = y, hue = hue, data = data, orient = orient, width = width_viol, inner = None,\
+                         palette = palette, bw = bw,  linewidth = linewidth, cut = cut, scale = scale, split = split)
+        
+    ax =  sns.stripplot (x = x, y = y, hue = hue, data = data, orient = orient, palette = palette,\
+                         edgecolor = "white", size = 3, jitter = 1, zorder = 0)
+    
+    ax =  sns.boxplot   (x = x, y = y, hue = hue, data = data, orient = orient, width = width_box, \
+                color = boxcolor, zorder = 10, showcaps = True, boxprops = boxprops, palette = palette,\
                 showfliers = True, whiskerprops = {'linewidth':2, "zorder":10}, saturation = 1)
+    
     sns.despine(left = True)
+    
+    if not alpha is None:
+        _ = plt.setp(ax.collections + ax.artists, alpha = alpha)
+    
+    if pointplot:
+        ax = sns.pointplot(x = x, y = y, hue = hue, data = data, color='red',orient=orient)
+        
     return ax
+
