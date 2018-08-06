@@ -701,6 +701,7 @@ def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7
     if ax is None:
         f, ax = plt.subplots(figsize = figsize)
     
+    offset = max(width_box/1.8,.15) + .05
     n_plots = 3
     split = False
     boxcolor = "black"
@@ -713,7 +714,7 @@ def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7
     # Draw half-violin
     ax = half_violinplot(x = x, y = y, hue = hue, data = data, orient = orient, width = width_viol,
                          inner = None, palette = palette, bw = bw,  linewidth = linewidth,
-                         cut = cut, scale = scale, split = split, offset = max(width_box/1.8,.15) )
+                         cut = cut, scale = scale, split = split, offset = offset )
     
     # Draw boxplot
     ax =  sns.boxplot   (x = x, y = y, hue = hue, data = data, orient = orient, width = width_box, \
@@ -730,14 +731,23 @@ def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7
     # Add pointplot
     if pointplot:
         n_plots = 4
-        ax = sns.pointplot(x = x, y = y, hue = hue, data = data, color='red',orient=orient, \
-                           dodge = width_box, capsize = 0., errwidth = 0.)
+        if not hue is None:
+            ax = sns.pointplot(x = x, y = y, hue = hue, data = data, color='red', orient=orient, \
+                          dodge = width_box/2., capsize = 0., errwidth = 0., palette = palette, zorder = 20)
+        else:
+            ax = sns.pointplot(x = x, y = y, hue = hue, data = data, color='red', orient=orient, \
+                          dodge = width_box/2., capsize = 0., errwidth = 0., zorder = 20)            
     
     # Prune the legend
     if not hue is None: 
         handles, labels = ax.get_legend_handles_labels()
-        _ = plt.legend(handles[0:len(labels)//n_plots], labels[0:len(labels)//n_plots],
+        _ = plt.legend(handles[0:len(labels)//n_plots], labels[0:len(labels)//n_plots], \
                        bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    
+    # Adjust the ylim to fit (if needed) 
+    ylim = list(ax.get_ylim())
+    ylim[-1]  -= (width_box + width_viol)/4.
+    _ = ax.set_ylim(ylim)
         
     return ax
 
