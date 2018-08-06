@@ -583,19 +583,20 @@ def half_violinplot(x=None, y=None, hue=None, data=None, order=None, hue_order=N
     return ax
 
 
-def RainCloud(data, x, y, ort = "v", figsize = (12, 11), width_viol = .7, width_box = .15,
-              palette = "Set2", bw = .2, linewidth = 1, cut = 0., scale = "area"):
-    '''Draw a Raincloud plot of measure y of different caetgories x.'''
+def RainCloud(data, x, y, orient = "v", width_viol = .7, width_box = .15,
+              palette = "Set2", bw = .2, linewidth = 1, cut = 0., scale = "area",
+             color = None, ax = None, figsize = (12, 11)):
+    '''Draw a Raincloud plot of measure 'y' of different caetgories 'x'. Here 'x' and 'y' different columns of the pandas dataframe 'data'.'''
 
-    if ort == 'h': #swap x and y
+    if orient == 'h': #swap x and y
         x, y = y, x
-
-    f, ax = plt.subplots(figsize = figsize)
-    ax = half_violinplot(data = data, x = x, y = y, orient = ort, width = width_viol, inner = None,\
+    if ax is None:
+        f, ax = plt.subplots(figsize = figsize)
+    ax = half_violinplot(data = data, x = x, y = y, orient = orient, width = width_viol, inner = None,\
                          palette = palette, bw = bw,  linewidth = linewidth, cut = cut, scale = scale)
-    ax =  sns.stripplot (data = data, x = x, y = y, orient = ort, palette = palette,\
+    ax =  sns.stripplot (data = data, x = x, y = y, orient = orient, palette = palette,\
                          edgecolor = "white", size = 2, jitter = 1, zorder = 0)
-    ax =  sns.boxplot   (data = data, x = x, y = y, orient = ort, width = width_box, \
+    ax =  sns.boxplot   (data = data, x = x, y = y, orient = orient, width = width_box, \
                 color = "black", zorder = 10, showcaps = True, boxprops = {'facecolor':'none', "zorder":10},\
                 showfliers = True, whiskerprops = {'linewidth':2, "zorder":10}, saturation = 1)
     sns.despine(left = True)
