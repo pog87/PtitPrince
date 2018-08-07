@@ -124,8 +124,8 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
                 raise ValueError(err)
         self.inner = inner
 
-        if split and self.hue_names is not None and len(self.hue_names) != 2:
-            msg = "There must be exactly two hue levels to use `split`.'"
+        if split and self.hue_names is not None and len(self.hue_names) < 2:
+            msg = "There must be at least two hue levels to use `split`.'"
             raise ValueError(msg)
         self.split = split
 
@@ -732,22 +732,29 @@ def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7
     if pointplot:
         n_plots = 4
         if not hue is None:
-            ax = sns.pointplot(x = x, y = y, hue = hue, data = data, color='red', orient=orient, \
+            ax = sns.pointplot(x = x, y = y, hue = hue, data = data, orient=orient, \
                           dodge = width_box/2., capsize = 0., errwidth = 0., palette = palette, zorder = 20)
         else:
             ax = sns.pointplot(x = x, y = y, hue = hue, data = data, color='red', orient=orient, \
                           dodge = width_box/2., capsize = 0., errwidth = 0., zorder = 20)            
     
-    # Prune the legend
+    # Prune the legend, add legend title
     if not hue is None: 
         handles, labels = ax.get_legend_handles_labels()
         _ = plt.legend(handles[0:len(labels)//n_plots], labels[0:len(labels)//n_plots], \
                        bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+        if type(hue) is str:
+            _ = ax.legend_.set_title(hue)
     
-    # Adjust the ylim to fit (if needed) 
-    ylim = list(ax.get_ylim())
-    ylim[-1]  -= (width_box + width_viol)/4.
-    _ = ax.set_ylim(ylim)
+    # Adjust the ylim to fit (if needed)
+    if orient == "h":
+        ylim = list(ax.get_ylim())
+        ylim[-1]  -= (width_box + width_viol)/4.
+        _ = ax.set_ylim(ylim)
+    elif orient == "v":
+        xlim = list(ax.get_xlim())
+        xlim[-1]  -= (width_box + width_viol)/4.
+        _ = ax.set_xlim(xlim)
         
     return ax
 
