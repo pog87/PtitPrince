@@ -31,7 +31,7 @@ __all__ = ["boxplot", "half_violinplot", "violinplot", "stripplot", "swarmplot",
 class _StripPlotter(_CategoricalScatterPlotter):
     """1-d scatterplot with categorical organization."""
     def __init__(self, x, y, hue, data, order, hue_order,
-                 jitter, dodge, orient, color, palette, width):
+                 jitter, dodge, orient, color, palette, width, move):
         """Initialize the plotter."""
         self.establish_variables(x, y, hue, data, orient, order, hue_order)
         self.establish_colors(color, palette, 1)
@@ -39,6 +39,7 @@ class _StripPlotter(_CategoricalScatterPlotter):
         # Set object attributes
         self.dodge = dodge
         self.width = width
+        self.move = move
 
         if jitter == 1:  # Use a good default for `jitter = True`
             jlim = 0.1
@@ -56,9 +57,9 @@ class _StripPlotter(_CategoricalScatterPlotter):
             if self.plot_hues is None or not self.dodge:
 
                 if self.hue_names is None:
-                    hue_mask = np.ones(group_data.size, np.bool)
+                    hue_mask =  np.ones(group_data.size, np.bool)
                 else:
-                    hue_mask = np.array([h in self.hue_names
+                    hue_mask =  np.array([h in self.hue_names
                                          for h in self.plot_hues[i]], np.bool)
                     # Broken on older numpys
                     # hue_mask = np.in1d(self.plot_hues[i], self.hue_names)
@@ -66,7 +67,7 @@ class _StripPlotter(_CategoricalScatterPlotter):
                 strip_data = group_data[hue_mask]
 
                 # Plot the points in centered positions
-                cat_pos = np.ones(strip_data.size) * i
+                cat_pos = self.move + np.ones(strip_data.size) * i
                 cat_pos += self.jitterer(len(strip_data))
                 kws.update(c=self.point_colors[i][hue_mask])
                 if self.orient == "v":
@@ -82,7 +83,7 @@ class _StripPlotter(_CategoricalScatterPlotter):
 
                     # Plot the points in centered positions
                     center = i + offsets[j]
-                    cat_pos = np.ones(strip_data.size) * center
+                    cat_pos = self.move + np.ones(strip_data.size) * center
                     cat_pos += self.jitterer(len(strip_data))
                     kws.update(c=self.point_colors[i][hue_mask])
                     if self.orient == "v":
@@ -642,7 +643,7 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
             
             
 def stripplot(x=None, y=None, hue=None, data=None, order=None, hue_order=None,
-              jitter=True, dodge=False, orient=None, color=None, palette=None,
+              jitter=True, dodge=False, orient=None, color=None, palette=None, move = 0,
               size=5, edgecolor="gray", linewidth=0, ax=None, width=.8, **kwargs):
 
     if "split" in kwargs:
@@ -651,7 +652,7 @@ def stripplot(x=None, y=None, hue=None, data=None, order=None, hue_order=None,
         warnings.warn(msg, UserWarning)
 
     plotter = _StripPlotter(x, y, hue, data, order, hue_order,
-                            jitter, dodge, orient, color, palette, width)
+                            jitter, dodge, orient, color, palette, width, move)
     if ax is None:
         ax = plt.gca()
 
@@ -692,7 +693,7 @@ def half_violinplot(x=None, y=None, hue=None, data=None, order=None, hue_order=N
 
 
 def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7, width_box = .15,
-              palette = "Set2", bw = .2, linewidth = 1, cut = 0., scale = "area",
+              palette = "Set2", bw = .2, linewidth = 1, cut = 0., scale = "area", jitter = 1, move = 0.,
              color = None, ax = None, figsize = (12, 11), pointplot = False, alpha = None, dodge = False):
     '''Draw a Raincloud plot of measure 'y' of different caetgories 'x'. Here 'x' and 'y' different columns of the pandas dataframe 'data'.'''
 
@@ -726,8 +727,8 @@ def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7
         _ = plt.setp(ax.collections + ax.artists, alpha = alpha)
     
     # Draw stripplot
-    ax =  stripplot (x = x, y = y, hue = hue, data = data, orient = orient, palette = palette,\
-                         edgecolor = "white", size = 3, jitter = 1, zorder = 0, dodge = dodge, width = width_box )
+    ax =  stripplot (x = x, y = y, hue = hue, data = data, orient = orient, palette = palette, move = move, \
+                         edgecolor = "white", size = 3, jitter = jitter, zorder = 0, dodge = dodge, width = width_box )
     # Add pointplot
     if pointplot:
         n_plots = 4
@@ -739,12 +740,11 @@ def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7
                           dodge = width_box/2., capsize = 0., errwidth = 0., zorder = 20)            
     
     # Prune the legend, add legend title
-    if not hue is None: 
+    if not hue is None:             
         handles, labels = ax.get_legend_handles_labels()
         _ = plt.legend(handles[0:len(labels)//n_plots], labels[0:len(labels)//n_plots], \
-                       bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-        if type(hue) is str:
-            _ = ax.legend_.set_title(hue)
+                       bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., \
+                       title = str(hue))#, title_fontsize = 25)
     
     # Adjust the ylim to fit (if needed)
     if orient == "h":
