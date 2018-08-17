@@ -24,8 +24,7 @@ from seaborn.axisgrid import FacetGrid, _facet_docs
 from seaborn.categorical import *
 from seaborn.categorical import _CategoricalPlotter, _CategoricalScatterPlotter,  _categorical_docs
 
-__all__ = ["boxplot", "half_violinplot", "violinplot", "stripplot", "swarmplot", "lvplot",
-           "pointplot", "barplot", "countplot", "factorplot"]
+__all__ = [ "half_violinplot", "stripplot", "RainCloud"]
 
 
 class _StripPlotter(_CategoricalScatterPlotter):
@@ -720,7 +719,7 @@ def RainCloud(x = None, y = None, hue = None, data = None,
         x, y = y, x
     if ax is None:
         f, ax = plt.subplots(figsize = figsize)
-    if not offset is None:
+    if offset is None:
         offset = max(width_box/1.8,.15) + .05
     n_plots = 3
     split = False
