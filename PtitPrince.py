@@ -737,7 +737,7 @@ def RainCloud(x = None, y = None, hue = None, data = None,
 
     # Draw boxplot
     ax =  sns.boxplot   (x = x, y = y, hue = hue, data = data, orient = orient, width = width_box, \
-                color = boxcolor, zorder = 10, showcaps = True, boxprops = boxprops, palette = palette,\
+                color = boxcolor, showcaps = True, boxprops = boxprops, palette = palette,\
                 showfliers = True, whiskerprops = {'linewidth':2, "zorder":10}, saturation = 1, dodge = dodge)
 
     # Set alpha of the two
