@@ -98,7 +98,7 @@ class _StripPlotter(_CategoricalScatterPlotter):
         self.annotate_axes(ax)
         if self.orient == "h":
             ax.invert_yaxis()
-            
+
 
 class _Half_ViolinPlotter(_CategoricalPlotter):
 
@@ -436,8 +436,8 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
                         continue
 
                     # Option 2a: we are drawing a single split violin
-                    # -----------------------------------------------                              
-                    
+                    # -----------------------------------------------
+
                     if self.split:
 
                         grid = np.ones(self.gridsize) * i
@@ -640,8 +640,8 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
         if self.orient == "h":
             ax.invert_yaxis()
 
-            
-            
+
+
 def stripplot(x=None, y=None, hue=None, data=None, order=None, hue_order=None,
               jitter=True, dodge=False, orient=None, color=None, palette=None, move = 0,
               size=5, edgecolor="gray", linewidth=0, ax=None, width=.8, **kwargs):
@@ -672,8 +672,8 @@ def stripplot(x=None, y=None, hue=None, data=None, order=None, hue_order=None,
 
 
 
-            
-            
+
+
 def half_violinplot(x=None, y=None, hue=None, data=None, order=None, hue_order=None,
                bw="scott", cut=2, scale="area", scale_hue=True, gridsize=100,
                width=.8, inner="box", split=False, dodge=True, orient=None,
@@ -692,17 +692,36 @@ def half_violinplot(x=None, y=None, hue=None, data=None, order=None, hue_order=N
     return ax
 
 
-def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7, width_box = .15,
-              palette = "Set2", bw = .2, linewidth = 1, cut = 0., scale = "area", jitter = 1, move = 0.,
-             color = None, ax = None, figsize = (12, 11), pointplot = False, alpha = None, dodge = False):
-    '''Draw a Raincloud plot of measure 'y' of different caetgories 'x'. Here 'x' and 'y' different columns of the pandas dataframe 'data'.'''
+def RainCloud(x = None, y = None, hue = None, data = None,
+              orient = "v", width_viol = .7, width_box = .15,
+              palette = "Set2", bw = .2, linewidth = 1, cut = 0.,
+              scale = "area", jitter = 1, move = 0., offset = None,
+              color = None, ax = None, figsize = (12, 11),
+              pointplot = False, alpha = None, dodge = False):
+    '''Draw a Raincloud plot of measure `y` of different categories `x`. Here `x` and `y` different columns of the pandas dataframe `data`.
+    A raincloud is made of:
+        1) "Cloud", kernel desity estimate, the half of a violinplot.
+        2) "Rain", a stripplot below the cloud
+        3) "Umberella", a boxplot
+        4) "Thunder", a pointplot connecting the mean of the different categories (if `pointplot` is `True`)
+    Main inputs:
+        x           categorical data. Iterable, np.array, or dataframe column name if 'data' is specified
+        y           measure data. Iterable, np.array, or dataframe column name if 'data' is specified
+        hue         second categorical data. Use it to obtain different clouds and rainpoints
+        data        input pandas dataframe
+        orient      vertical if "v" (default), horizontal if "h"
+        width_viol  width of the cloud
+        width_box   width of the boxplot
+        move        adjust rain position to the x-axis (default value 0.)
+        offset      adjust cloud position to the x-axis
+    '''
 
     if orient == 'h': #swap x and y
         x, y = y, x
     if ax is None:
         f, ax = plt.subplots(figsize = figsize)
-    
-    offset = max(width_box/1.8,.15) + .05
+    if not offset is None:
+        offset = max(width_box/1.8,.15) + .05
     n_plots = 3
     split = False
     boxcolor = "black"
@@ -711,21 +730,21 @@ def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7
         split = True
         boxcolor = palette
         boxprops = {"zorder":10}
-    
+
     # Draw half-violin
     ax = half_violinplot(x = x, y = y, hue = hue, data = data, orient = orient, width = width_viol,
                          inner = None, palette = palette, bw = bw,  linewidth = linewidth,
                          cut = cut, scale = scale, split = split, offset = offset )
-    
+
     # Draw boxplot
     ax =  sns.boxplot   (x = x, y = y, hue = hue, data = data, orient = orient, width = width_box, \
                 color = boxcolor, zorder = 10, showcaps = True, boxprops = boxprops, palette = palette,\
                 showfliers = True, whiskerprops = {'linewidth':2, "zorder":10}, saturation = 1, dodge = dodge)
-    
+
     # Set alpha of the two
     if not alpha is None:
         _ = plt.setp(ax.collections + ax.artists, alpha = alpha)
-    
+
     # Draw stripplot
     ax =  stripplot (x = x, y = y, hue = hue, data = data, orient = orient, palette = palette, move = move, \
                          edgecolor = "white", size = 3, jitter = jitter, zorder = 0, dodge = dodge, width = width_box )
@@ -737,15 +756,15 @@ def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7
                           dodge = width_box/2., capsize = 0., errwidth = 0., palette = palette, zorder = 20)
         else:
             ax = sns.pointplot(x = x, y = y, hue = hue, data = data, color='red', orient=orient, \
-                          dodge = width_box/2., capsize = 0., errwidth = 0., zorder = 20)            
-    
+                          dodge = width_box/2., capsize = 0., errwidth = 0., zorder = 20)
+
     # Prune the legend, add legend title
-    if not hue is None:             
+    if not hue is None:
         handles, labels = ax.get_legend_handles_labels()
         _ = plt.legend(handles[0:len(labels)//n_plots], labels[0:len(labels)//n_plots], \
                        bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., \
                        title = str(hue))#, title_fontsize = 25)
-    
+
     # Adjust the ylim to fit (if needed)
     if orient == "h":
         ylim = list(ax.get_ylim())
@@ -755,6 +774,5 @@ def RainCloud(x=None, y=None, hue=None, data=None, orient = "v", width_viol = .7
         xlim = list(ax.get_xlim())
         xlim[-1]  -= (width_box + width_viol)/4.
         _ = ax.set_xlim(xlim)
-        
-    return ax
 
+    return ax
