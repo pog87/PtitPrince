@@ -8,8 +8,10 @@ You can install it via
 pip install ptitprince
 ```
 
-or cloning this. repo.
+or cloning this repo in your working directory.
 
+-----
+ 
  I tried to port to python the Raincloud plot (or PetitPrince plot, depending on the orientation) from R (under ggplot2) to Python.  The Raincloud plot is a variant of the violin plot written in R ggplot2 by [Micah Hallen](https://micahallen.org/2018/03/15/introducing-raincloud-plots/). Everithing started with  this xkcd comic, making fun of the violin plot.
 
 ![xkcd](https://imgs.xkcd.com/comics/violin_plots.png)
