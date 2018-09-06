@@ -1,6 +1,6 @@
 # PtitPrince
 
-A python iplementation of the Raincloud plot!
+A python implementation of the Raincloud plot!
 
 
 You can install it via
@@ -32,4 +32,5 @@ Then I tried to replicate the plots from the original post by [Micah Hallen](htt
 ------
 
 [![Downloads](http://pepy.tech/badge/ptitprince)](http://pepy.tech/project/ptitprince)
+
 [List](https://github.com/thomasjpfan/awesome-python-data-science) that metions that package.
