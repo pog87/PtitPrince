@@ -33,4 +33,4 @@ Then I tried to replicate the plots from the original post by [Micah Hallen](htt
 
 [![Downloads](http://pepy.tech/badge/ptitprince)](http://pepy.tech/project/ptitprince)
 
-[List](https://github.com/thomasjpfan/awesome-python-data-science) that metions that package.
+[List](https://github.com/thomasjpfan/awesome-python-data-science) that metions this package.
