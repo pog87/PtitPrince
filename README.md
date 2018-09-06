@@ -28,3 +28,8 @@ Then I tried to replicate the plots from the original post by [Micah Hallen](htt
 
  * ask seaborn mantainers to add this new plot type
  * add a "move" option in seabon to control the positioning of each plot, as in ggplot2.
+
+------
+
+[![Downloads](http://pepy.tech/badge/ptitprince)](http://pepy.tech/project/ptitprince)
+[List](https://github.com/thomasjpfan/awesome-python-data-science) that metions that package.
