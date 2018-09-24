@@ -1,7 +1,7 @@
 # PtitPrince
 
 A python implementation of the Raincloud plot!
-
+[https://github.com/RainCloudPlots/RainCloudPlots](https://github.com/RainCloudPlots/RainCloudPlots)
 
 You can install it via
 ```
