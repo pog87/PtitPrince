@@ -30,7 +30,7 @@ Then I tried to replicate the plots from the original post by [Micah Allen](http
  * add a "move" option in seabon to control the positioning of each plot, as in ggplot2.
 
 ------
-
+[![Binder](https://img.shields.io/badge/binder%20tutorial-python-fb62f6.svg)](https://mybinder.org/v2/gh/RainCloudPlots/RainCloudPlots/master?filepath=tutorial_python%2Fraincloud_tutorial_python.ipynb)
 [![Downloads](http://pepy.tech/badge/ptitprince)](http://pepy.tech/project/ptitprince)
 
 [List](https://github.com/thomasjpfan/awesome-python-data-science) that metions this package.
