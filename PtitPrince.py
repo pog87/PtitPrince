@@ -17,7 +17,7 @@ from seaborn.external.six import string_types
 from seaborn.external.six.moves import range
 
 from seaborn import utils
-from seaborn.utils import iqr, categorical_order, remove_na
+from seaborn.utils import iqr, categorical_order
 from seaborn.algorithms import bootstrap
 from seaborn.palettes import color_palette, husl_palette, light_palette, dark_palette
 from seaborn.axisgrid import FacetGrid, _facet_docs
