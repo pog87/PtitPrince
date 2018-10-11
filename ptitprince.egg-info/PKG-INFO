@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: ptitprince
+Version: 0.1.4
+Summary: A Python implementation of Rainclouds, originally on R, ggplot2. Written on top of seaborn.
+Home-page: http://github.com/pog87/PtitPrince
+Author: Davide Poggiali
+Author-email: poggiali@math.unipd.it
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
