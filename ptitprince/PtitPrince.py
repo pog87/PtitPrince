@@ -734,15 +734,15 @@ def RainCloud(x = None, y = None, hue = None, data = None,
         boxprops = {"zorder":10}
 
     # Draw half-violin
-    ax = half_violinplot(x = x, y = y, hue = hue, data = data,
-                         order = order, hue_order = hue_order,
-                         orient = orient, width = width_viol,
-                         inner = None, palette = palette, bw = bw,  linewidth = linewidth,
-                         cut = cut, scale = scale, split = split, offset = offset )
+    half_violinplot(x = x, y = y, hue = hue, data = data,ax=ax,
+                     order = order, hue_order = hue_order,
+                     orient = orient, width = width_viol,
+                     inner = None, palette = palette, bw = bw,  linewidth = linewidth,
+                     cut = cut, scale = scale, split = split, offset = offset )
 
     # Draw boxplot
-    ax =  sns.boxplot   (x = x, y = y, hue = hue, data = data, orient = orient, width = width_box,
-                         order = order, hue_order = hue_order,
+    sns.boxplot(x = x, y = y, hue = hue, data = data, orient = orient, width = width_box,
+                         order = order, hue_order = hue_order,ax=ax,
                          color = boxcolor, showcaps = True, boxprops = boxprops,
                          palette = palette,showfliers = True, whiskerprops = {'linewidth':2, "zorder":10},
                          saturation = 1, dodge = dodge)
@@ -752,19 +752,19 @@ def RainCloud(x = None, y = None, hue = None, data = None,
         _ = plt.setp(ax.collections + ax.artists, alpha = alpha)
 
     # Draw stripplot
-    ax =  stripplot (x = x, y = y, hue = hue, data = data, orient = orient,
+    stripplot(x = x, y = y, hue = hue, data = data, orient = orient, ax=ax,
                     order = order, hue_order = hue_order, palette = palette, move = move,
                     edgecolor = "white", size = 3, jitter = jitter, zorder = 0, dodge = dodge, width = width_box )
     # Add pointplot
     if pointplot:
         n_plots = 4
         if not hue is None:
-            ax = sns.pointplot(x = x, y = y, hue = hue, data = data, orient=orient,
-                        order = order, hue_order = hue_order,
+            sns.pointplot(x = x, y = y, hue = hue, data = data, orient=orient,
+                        order = order, hue_order = hue_order, ax=ax,
                         dodge = width_box/2., capsize = 0., errwidth = 0., palette = palette, zorder = 20)
         else:
-            ax = sns.pointplot(x = x, y = y, hue = hue, data = data, color='red', orient=orient,
-                        order = order, hue_order = hue_order,
+            sns.pointplot(x = x, y = y, hue = hue, data = data, color='red', orient=orient,
+                        order = order, hue_order = hue_order, ax=ax,
                         dodge = width_box/2., capsize = 0., errwidth = 0., zorder = 20)
 
     # Prune the legend, add legend title
