@@ -25,7 +25,7 @@ from seaborn.categorical import *
 from seaborn.categorical import _CategoricalPlotter, _CategoricalScatterPlotter,  _categorical_docs
 
 __all__ = [ "half_violinplot", "stripplot", "RainCloud"]
-
+__version__ = '0.1.5'
 
 class _StripPlotter(_CategoricalScatterPlotter):
     """1-d scatterplot with categorical organization."""
@@ -669,10 +669,6 @@ def stripplot(x=None, y=None, hue=None, data=None, order=None, hue_order=None,
     return ax
 
 
-
-
-
-
 def half_violinplot(x=None, y=None, hue=None, data=None, order=None, hue_order=None,
                bw="scott", cut=2, scale="area", scale_hue=True, gridsize=100,
                width=.8, inner="box", split=False, dodge=True, orient=None,
@@ -696,14 +692,18 @@ def RainCloud(x = None, y = None, hue = None, data = None,
               orient = "v", width_viol = .7, width_box = .15,
               palette = "Set2", bw = .2, linewidth = 1, cut = 0.,
               scale = "area", jitter = 1, move = 0., offset = None,
-              color = None, ax = None, figsize = (12, 11),
-              pointplot = False, alpha = None, dodge = False):
+              point_size = 3, ax = None, pointplot = False, alpha = None,
+              dodge = False, color = None ):
+
     '''Draw a Raincloud plot of measure `y` of different categories `x`. Here `x` and `y` different columns of the pandas dataframe `data`.
+
     A raincloud is made of:
+
         1) "Cloud", kernel desity estimate, the half of a violinplot.
         2) "Rain", a stripplot below the cloud
         3) "Umberella", a boxplot
         4) "Thunder", a pointplot connecting the mean of the different categories (if `pointplot` is `True`)
+
     Main inputs:
         x           categorical data. Iterable, np.array, or dataframe column name if 'data' is specified
         y           measure data. Iterable, np.array, or dataframe column name if 'data' is specified
@@ -721,7 +721,9 @@ def RainCloud(x = None, y = None, hue = None, data = None,
     if orient == 'h': #swap x and y
         x, y = y, x
     if ax is None:
-        f, ax = plt.subplots(figsize = figsize)
+        ax = plt.gca()
+        #f, ax = plt.subplots(figsize = figsize) old version had this
+
     if offset is None:
         offset = max(width_box/1.8,.15) + .05
     n_plots = 3
@@ -734,18 +736,18 @@ def RainCloud(x = None, y = None, hue = None, data = None,
         boxprops = {"zorder":10}
 
     # Draw half-violin
-    ax = half_violinplot(x = x, y = y, hue = hue, data = data,
+    half_violinplot(x = x, y = y, hue = hue, data = data,
                          order = order, hue_order = hue_order,
                          orient = orient, width = width_viol,
                          inner = None, palette = palette, bw = bw,  linewidth = linewidth,
-                         cut = cut, scale = scale, split = split, offset = offset )
+                         cut = cut, scale = scale, split = split, offset = offset, ax =ax)
 
     # Draw boxplot
-    ax =  sns.boxplot   (x = x, y = y, hue = hue, data = data, orient = orient, width = width_box,
+    sns.boxplot   (x = x, y = y, hue = hue, data = data, orient = orient, width = width_box,
                          order = order, hue_order = hue_order,
                          color = boxcolor, showcaps = True, boxprops = boxprops,
                          palette = palette,showfliers = True, whiskerprops = {'linewidth':2, "zorder":10},
-                         saturation = 1, dodge = dodge)
+                         saturation = 1, dodge = dodge, ax =ax)
 
     # Set alpha of the two
     if not alpha is None:
@@ -754,18 +756,18 @@ def RainCloud(x = None, y = None, hue = None, data = None,
     # Draw stripplot
     ax =  stripplot (x = x, y = y, hue = hue, data = data, orient = orient,
                     order = order, hue_order = hue_order, palette = palette, move = move,
-                    edgecolor = "white", size = 3, jitter = jitter, zorder = 0, dodge = dodge, width = width_box )
+                    edgecolor = "white", size = point_size, jitter = jitter, zorder = 0, dodge = dodge, width = width_box, ax =ax )
     # Add pointplot
     if pointplot:
         n_plots = 4
         if not hue is None:
-            ax = sns.pointplot(x = x, y = y, hue = hue, data = data, orient=orient,
+            sns.pointplot(x = x, y = y, hue = hue, data = data, orient=orient,
                         order = order, hue_order = hue_order,
-                        dodge = width_box/2., capsize = 0., errwidth = 0., palette = palette, zorder = 20)
+                        dodge = width_box/2., capsize = 0., errwidth = 0., palette = palette, zorder = 20, ax =ax)
         else:
-            ax = sns.pointplot(x = x, y = y, hue = hue, data = data, color='red', orient=orient,
+            sns.pointplot(x = x, y = y, hue = hue, data = data, color='red', orient=orient,
                         order = order, hue_order = hue_order,
-                        dodge = width_box/2., capsize = 0., errwidth = 0., zorder = 20)
+                        dodge = width_box/2., capsize = 0., errwidth = 0., zorder = 20, ax =ax)
 
     # Prune the legend, add legend title
     if not hue is None:
