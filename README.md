@@ -11,6 +11,13 @@ pip install ptitprince
 or cloning this repo in your working directory.
 
 -----
+
+To cite Raincloud plots please use the following information:
+
+> Allen M, Poggiali D, Whitaker K et al. Raincloud plots: a multi-platform tool for robust data visualization [version 1; peer review: 2 approved]. Wellcome Open Res 2019, 4:63. DOI: [10.12688/wellcomeopenres.15191.1](https://doi.org/10.12688/wellcomeopenres.15191.1)
+
+
+-----
  
  I tried to port to python the Raincloud plot (or PetitPrince plot, depending on the orientation) from R (under ggplot2) to Python.  The Raincloud plot is a variant of the violin plot written in R ggplot2 by [Micah Allen](https://micahallen.org/2018/03/15/introducing-raincloud-plots/). Everithing started with  this [xkcd](https://imgs.xkcd.com/comics/violin_plots.png) comic, making fun of the violin plot.
 
