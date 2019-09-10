@@ -3,18 +3,26 @@
 A python implementation of the Raincloud plot!
 [https://github.com/RainCloudPlots/RainCloudPlots](https://github.com/RainCloudPlots/RainCloudPlots)
 
+## Installation
 You can install it via
 ```
 pip install ptitprince
 ```
 
+or via conda
+```
+conda install -c pog87 ptitprince
+```
+
 or cloning this repo in your working directory.
 
 -----
+## Academic use
 
 To **cite Raincloud plots** please use the following information:
 
 > Allen M, Poggiali D, Whitaker K et al. Raincloud plots: a multi-platform tool for robust data visualization [version 1; peer review: 2 approved]. Wellcome Open Res 2019, 4:63. DOI: [10.12688/wellcomeopenres.15191.1](https://doi.org/10.12688/wellcomeopenres.15191.1)
+
 
 
 ![output](output_4_0.png)
