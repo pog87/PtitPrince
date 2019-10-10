@@ -33,7 +33,7 @@ To **cite Raincloud plots** please use the following information:
  
 This is a python version of the Raincloud plot (or PetitPrince plot, depending on the orientation) from R (under ggplot2) to Python.  The Raincloud plot is a variant of the violin plot written in R ggplot2 by [Micah Allen](https://micahallen.org/2018/03/15/introducing-raincloud-plots/).
 
-I found a [tweet](https://twitter.com/flxrue/status/974639616912478210) asking for a .py version of the RainCloud plot, and I agreed to give it a try. Alas, the py version for ggplot2 does not allow to create new styles in a confortable way. So I decided to write this package using the [seaborn](https://seaborn.pydata.org/) library as a requisite.
+I found a tweet asking for a .py version of the RainCloud plot, and I agreed to give it a try. Alas, the py version for ggplot2 does not allow to create new styles in a confortable way. So I decided to write this package using the [seaborn](https://seaborn.pydata.org/) library as a requisite.
 
 ---
 
