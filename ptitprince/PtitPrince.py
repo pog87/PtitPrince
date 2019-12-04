@@ -693,7 +693,7 @@ def RainCloud(x = None, y = None, hue = None, data = None,
               palette = "Set2", bw = .2, linewidth = 1, cut = 0.,
               scale = "area", jitter = 1, move = 0., offset = None,
               point_size = 3, ax = None, pointplot = False, alpha = None,
-              dodge = False, color = None ):
+              dodge = False, linecolor = 'red' ):
 
     '''Draw a Raincloud plot of measure `y` of different categories `x`. Here `x` and `y` different columns of the pandas dataframe `data`.
 
@@ -761,13 +761,15 @@ def RainCloud(x = None, y = None, hue = None, data = None,
     if pointplot:
         n_plots = 4
         if not hue is None:
-            sns.pointplot(x = x, y = y, hue = hue, data = data, orient=orient,
-                        order = order, hue_order = hue_order,
-                        dodge = width_box/2., capsize = 0., errwidth = 0., palette = palette, zorder = 20, ax =ax)
+            sns.pointplot(x = x, y = y, hue = hue, data = data,
+                          orient=orient, order = order, hue_order = hue_order,
+                          dodge = width_box/2., capsize = 0., errwidth = 0.,
+                          palette = palette, zorder = 20, ax =ax)
         else:
-            sns.pointplot(x = x, y = y, hue = hue, data = data, color='red', orient=orient,
-                        order = order, hue_order = hue_order,
-                        dodge = width_box/2., capsize = 0., errwidth = 0., zorder = 20, ax =ax)
+            sns.pointplot(x = x, y = y, hue = hue, data = data, color = linecolor,
+                           orient=orient, order = order, hue_order = hue_order,
+                           dodge = width_box/2., capsize = 0., errwidth = 0.,
+                           zorder = 20, ax =ax)
 
     # Prune the legend, add legend title
     if not hue is None:
