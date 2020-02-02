@@ -758,7 +758,6 @@ def RainCloud(x = None, y = None, hue = None, data = None,
                     order = order, hue_order = hue_order, palette = palette, move = move,
                     edgecolor = "white", size = point_size, jitter = jitter, zorder = 0, dodge = dodge, width = width_box, ax =ax, alpha=alpha)
 
-
     # Add pointplot
     if pointplot:
         n_plots = 4
