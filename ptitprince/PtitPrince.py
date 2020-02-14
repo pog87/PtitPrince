@@ -693,7 +693,7 @@ def RainCloud(x = None, y = None, hue = None, data = None,
               palette = "Set2", bw = .2, linewidth = 1, cut = 0.,
               scale = "area", jitter = 1, move = 0., offset = None,
               point_size = 3, ax = None, pointplot = False, alpha = None,
-              dodge = False, linecolor = 'red' ):
+              dodge = False, showfliers = False, linecolor = 'red' ):
 
     '''Draw a Raincloud plot of measure `y` of different categories `x`. Here `x` and `y` different columns of the pandas dataframe `data`.
 
@@ -746,7 +746,7 @@ def RainCloud(x = None, y = None, hue = None, data = None,
     sns.boxplot   (x = x, y = y, hue = hue, data = data, orient = orient, width = width_box,
                          order = order, hue_order = hue_order,
                          color = boxcolor, showcaps = True, boxprops = boxprops,
-                         palette = palette,showfliers = True, whiskerprops = {'linewidth':2, "zorder":10},
+                         palette = palette, showfliers = showfliers, whiskerprops = {'linewidth':2, "zorder":10},
                          saturation = 1, dodge = dodge, ax =ax)
 
     # Set alpha of the two
@@ -756,7 +756,8 @@ def RainCloud(x = None, y = None, hue = None, data = None,
     # Draw stripplot
     ax =  stripplot (x = x, y = y, hue = hue, data = data, orient = orient,
                     order = order, hue_order = hue_order, palette = palette, move = move,
-                    edgecolor = "white", size = point_size, jitter = jitter, zorder = 0, dodge = dodge, width = width_box, ax =ax )
+                    edgecolor = "white", size = point_size, jitter = jitter, zorder = 0, dodge = dodge, width = width_box, ax =ax, alpha=alpha)
+
     # Add pointplot
     if pointplot:
         n_plots = 4
