@@ -1,4 +1,4 @@
 matplotlib
 numpy
 scipy
-seaborn>=0.9
+seaborn>=0.10
