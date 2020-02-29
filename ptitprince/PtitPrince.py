@@ -692,9 +692,8 @@ def RainCloud(x = None, y = None, hue = None, data = None,
               orient = "v", width_viol = .7, width_box = .15,
               palette = "Set2", bw = .2, linewidth = 1, cut = 0.,
               scale = "area", jitter = 1, move = 0., offset = None,
-              point_size = 3, ax = None, pointplot = False, 
-              alpha = None, alpha_rain = 1., 
-              dodge = False, showfliers = True, linecolor = 'red' ):
+              point_size = 3, ax = None, pointplot = False,
+              alpha = None, dodge = False, linecolor = 'red', **kwargs ):
 
     '''Draw a Raincloud plot of measure `y` of different categories `x`. Here `x` and `y` different columns of the pandas dataframe `data`.
 
@@ -717,6 +716,9 @@ def RainCloud(x = None, y = None, hue = None, data = None,
         width_box   float, width of the boxplot
         move        float, adjusts rain position to the x-axis (default value 0.)
         offset      float, adjusts cloud position to the x-axis
+
+    kwargs can be passed to the [cloud (default), boxplot, rain/stripplot, pointplot]
+    by preponing [cloud_, box_, rain_ point_] to the argument name.
     '''
 
     if orient == 'h': #swap x and y
@@ -736,19 +738,32 @@ def RainCloud(x = None, y = None, hue = None, data = None,
         boxcolor = palette
         boxprops = {"zorder":10}
 
+    kwcloud = {}; kwbox = {}; kwrain = {}; kwpoint = {}
+    for key, value in kwargs.items():
+        if "cloud_" in key:
+            kwcloud[key.replace("cloud_","")] = value
+        elif "box_" in key:
+            kwbox[key.replace("box_","")] = value
+        elif "rain_" in key:
+            kwrain[key.replace("rain_","")] = value
+        elif "point_" in key:
+            kwpoint[key.replace("point_","")] = value
+        else:
+            kwcloud[key] = value
+
     # Draw half-violin
     half_violinplot(x = x, y = y, hue = hue, data = data,
                          order = order, hue_order = hue_order,
                          orient = orient, width = width_viol,
                          inner = None, palette = palette, bw = bw,  linewidth = linewidth,
-                         cut = cut, scale = scale, split = split, offset = offset, ax =ax)
+                         cut = cut, scale = scale, split = split, offset = offset, ax =ax, **kwcloud)
 
     # Draw boxplot
     sns.boxplot   (x = x, y = y, hue = hue, data = data, orient = orient, width = width_box,
                          order = order, hue_order = hue_order,
                          color = boxcolor, showcaps = True, boxprops = boxprops,
-                         palette = palette, showfliers = showfliers, whiskerprops = {'linewidth':2, "zorder":10},
-                         saturation = 1, dodge = dodge, ax =ax)
+                         palette = palette, whiskerprops = {'linewidth':2, "zorder":10},
+                         saturation = 1, dodge = dodge, ax =ax, **kwbox)
 
     # Set alpha of the two
     if not alpha is None:
@@ -758,7 +773,7 @@ def RainCloud(x = None, y = None, hue = None, data = None,
     ax =  stripplot (x = x, y = y, hue = hue, data = data, orient = orient,
                     order = order, hue_order = hue_order, palette = palette, move = move,
                     edgecolor = "white", size = point_size, jitter = jitter, zorder = 0, dodge = dodge,
-                    width = width_box, ax =ax, alpha=alpha_rain)
+                    width = width_box, ax =ax, **kwrain)
 
     # Add pointplot
     if pointplot:
@@ -767,12 +782,12 @@ def RainCloud(x = None, y = None, hue = None, data = None,
             sns.pointplot(x = x, y = y, hue = hue, data = data,
                           orient=orient, order = order, hue_order = hue_order,
                           dodge = width_box/2., capsize = 0., errwidth = 0.,
-                          palette = palette, zorder = 20, ax =ax)
+                          palette = palette, zorder = 20, ax =ax, **kwrain)
         else:
             sns.pointplot(x = x, y = y, hue = hue, data = data, color = linecolor,
                            orient=orient, order = order, hue_order = hue_order,
                            dodge = width_box/2., capsize = 0., errwidth = 0.,
-                           zorder = 20, ax =ax)
+                           zorder = 20, ax =ax, **kwrains)
 
     # Prune the legend, add legend title
     if not hue is None:
