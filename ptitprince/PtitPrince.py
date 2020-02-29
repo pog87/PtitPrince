@@ -21,11 +21,12 @@ from seaborn.utils import iqr, categorical_order, remove_na
 from seaborn.algorithms import bootstrap
 from seaborn.palettes import color_palette, husl_palette, light_palette, dark_palette
 from seaborn.axisgrid import FacetGrid, _facet_docs
+
 from seaborn.categorical import *
 from seaborn.categorical import _CategoricalPlotter, _CategoricalScatterPlotter,  _categorical_docs
 
 __all__ = [ "half_violinplot", "stripplot", "RainCloud"]
-__version__ = '0.1.5'
+__version__ = '0.2.3'
 
 class _StripPlotter(_CategoricalScatterPlotter):
     """1-d scatterplot with categorical organization."""
@@ -50,25 +51,24 @@ class _StripPlotter(_CategoricalScatterPlotter):
 
     def draw_stripplot(self, ax, kws):
         """Draw the points onto `ax`."""
-        # Set the default zorder to 2.1, so that the points
-        # will be drawn on top of line elements (like in a boxplot)
+        palette = np.asarray(self.colors)
         for i, group_data in enumerate(self.plot_data):
             if self.plot_hues is None or not self.dodge:
 
                 if self.hue_names is None:
-                    hue_mask =  np.ones(group_data.size, np.bool)
+                    hue_mask = np.ones(group_data.size, np.bool)
                 else:
-                    hue_mask =  np.array([h in self.hue_names
+                    hue_mask = np.array([h in self.hue_names
                                          for h in self.plot_hues[i]], np.bool)
-                    # Broken on older numpys
-                    # hue_mask = np.in1d(self.plot_hues[i], self.hue_names)
 
                 strip_data = group_data[hue_mask]
+                point_colors = np.asarray(self.point_colors[i][hue_mask])
 
                 # Plot the points in centered positions
                 cat_pos = self.move + np.ones(strip_data.size) * i
                 cat_pos += self.jitterer(len(strip_data))
-                kws.update(c=self.point_colors[i][hue_mask])
+                kws.update(c=palette[point_colors])
+
                 if self.orient == "v":
                     ax.scatter(cat_pos, strip_data, **kws)
                 else:
@@ -80,11 +80,12 @@ class _StripPlotter(_CategoricalScatterPlotter):
                     hue_mask = self.plot_hues[i] == hue_level
                     strip_data = group_data[hue_mask]
 
+                    point_colors = np.asarray(self.point_colors[i][hue_mask])
                     # Plot the points in centered positions
                     center = i + offsets[j]
                     cat_pos = self.move + np.ones(strip_data.size) * center
                     cat_pos += self.jitterer(len(strip_data))
-                    kws.update(c=self.point_colors[i][hue_mask])
+                    kws.update(c=palette[point_colors])
                     if self.orient == "v":
                         ax.scatter(cat_pos, strip_data, **kws)
                     else:
@@ -738,6 +739,7 @@ def RainCloud(x = None, y = None, hue = None, data = None,
         boxcolor = palette
         boxprops = {"zorder":10}
 
+
     kwcloud = {}; kwbox = {}; kwrain = {}; kwpoint = {}
     for key, value in kwargs.items():
         if "cloud_" in key:
@@ -787,7 +789,7 @@ def RainCloud(x = None, y = None, hue = None, data = None,
             sns.pointplot(x = x, y = y, hue = hue, data = data, color = linecolor,
                            orient=orient, order = order, hue_order = hue_order,
                            dodge = width_box/2., capsize = 0., errwidth = 0.,
-                           zorder = 20, ax =ax, **kwrains)
+                           zorder = 20, ax =ax, **kwrain)
 
     # Prune the legend, add legend title
     if not hue is None:
