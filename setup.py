@@ -9,7 +9,7 @@ setup(name='ptitprince',
       license='MIT',
       packages=['ptitprince'],
       install_requires=[
-          'seaborn>=0.10', 'matplotlib', 'numpy', 'scipy',
+          'seaborn>=0.10', 'matplotlib', 'numpy>=1.13', 'scipy',
           'PyHamcrest>=1.9.0', 'cython'
       ],
       zip_safe=False)
