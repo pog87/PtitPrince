@@ -39,7 +39,12 @@ I found a tweet asking for a .py version of the RainCloud plot, and I agreed to 
 
 Then I replicated the plots from the original post by [Micah Allen](https://micahallen.org/2018/03/15/introducing-raincloud-plots/), using Jupyter.
 
+### Changelog
 
+#### v.0.2.x
+
+    * PtitPrince now relies on seaborn 0.10 and numpy >= 1.13
+    * kwargs can be passed to the [cloud (default), boxplot, rain/stripplot, pointplot] by preponing [cloud_, box_, rain_ point_] to the argument name.
 
 ## Plans for the future:
 
