@@ -719,7 +719,8 @@ def RainCloud(x = None, y = None, hue = None, data = None,
         offset      float, adjusts cloud position to the x-axis
 
     kwargs can be passed to the [cloud (default), boxplot, rain/stripplot, pointplot]
-    by preponing [cloud_, box_, rain_ point_] to the argument name.
+    by preponing [cloud_, box_, rain_, point_] to the argument name.
+    Preponing nothing implies pass the kwarg to cloud
     '''
 
     if orient == 'h': #swap x and y
