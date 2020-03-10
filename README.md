@@ -46,7 +46,7 @@ Then I replicated the plots from the original post by [Micah Allen](https://mica
     * PtitPrince now relies on seaborn 0.10 and numpy >= 1.13
     * kwargs can be passed to the [cloud (default), boxplot, rain/stripplot, pointplot]
                      by preponing [cloud_, box_, rain_, point_] to the argument name.
-    * End of support for python2
+    * End of support for python2, now the support covers python>=3.6
 
 ## Plans for the future:
 
