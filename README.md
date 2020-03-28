@@ -53,7 +53,7 @@ Then I replicated the plots from the original post by [Micah Allen](https://mica
  * ~~ask seaborn mantainers to add this new plot type~~ (not gonna happen)
  * ~~add a "move" option in seabon to control the positioning of each plot, as in ggplot2.~~ (either, added in ptitprince)
  * ~~get RainCloud published~~ (done!)
- * add logarithic density estimate (LDE) to the otions for the cloud
+ * add logarithic density estimate (LDE) to the options for the cloud
 
 ------
 [![Binder](https://img.shields.io/badge/binder%20tutorial-python-fb62f6.svg)](https://mybinder.org/v2/gh/RainCloudPlots/RainCloudPlots/master?filepath=tutorial_python%2Fraincloud_tutorial_python.ipynb)
