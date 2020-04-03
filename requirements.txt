@@ -3,3 +3,4 @@ numpy>=1.13 #for conda
 scipy
 #new besion
 seaborn>=0.10
+pandas>= 1.0
