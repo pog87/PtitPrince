@@ -1,6 +1,5 @@
 matplotlib
-numpy>=1.13 #for conda
+numpy>=1.13
 scipy
-#new besion
 seaborn>=0.10
 pandas>= 1.0
