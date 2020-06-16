@@ -351,12 +351,12 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
         else:
             return self.width / (2 * len(self.hue_names))
 
-    def draw_violins(self, ax):
+    def draw_violins(self, ax, kws):
         """Draw the violins onto `ax`."""
         fill_func = ax.fill_betweenx if self.orient == "v" else ax.fill_between
         for i, group_data in enumerate(self.plot_data):
 
-            kws = dict(edgecolor=self.gray, linewidth=self.linewidth)
+            kws.update(dict(edgecolor=self.gray, linewidth=self.linewidth))
 
             # Option 1: we have a single level of grouping
             # --------------------------------------------
@@ -633,9 +633,9 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
             else:
                 ax.plot([val, val], [center - width, center + width], **kws)
 
-    def plot(self, ax):
+    def plot(self, ax, kws):
         """Make the violin plot."""
-        self.draw_violins(ax)
+        self.draw_violins(ax, kws)
         self.annotate_axes(ax)
         if self.orient == "h":
             ax.invert_yaxis()
@@ -684,7 +684,7 @@ def half_violinplot(x=None, y=None, hue=None, data=None, order=None, hue_order=N
     if ax is None:
         ax = plt.gca()
 
-    plotter.plot(ax)
+    plotter.plot(ax, kwargs)
     return ax
 
 
@@ -740,7 +740,10 @@ def RainCloud(x = None, y = None, hue = None, data = None,
         boxprops = {"zorder":10}
 
 
-    kwcloud = {}; kwbox = {}; kwrain = {}; kwpoint = {}
+    kwcloud = dict()
+    kwbox   = dict(saturation = 1, whiskerprops = {'linewidth':2, "zorder":10} )
+    kwrain  = dict(zorder = 0, edgecolor = "white")
+    kwpoint = dict(capsize = 0., errwidth = 0., zorder = 20)
     for key, value in kwargs.items():
         if "cloud_" in key:
             kwcloud[key.replace("cloud_","")] = value
@@ -753,43 +756,40 @@ def RainCloud(x = None, y = None, hue = None, data = None,
         else:
             kwcloud[key] = value
 
-    # Draw half-violin
+    # Draw cloud/half-violin
     half_violinplot(x = x, y = y, hue = hue, data = data,
                          order = order, hue_order = hue_order,
                          orient = orient, width = width_viol,
                          inner = None, palette = palette, bw = bw,  linewidth = linewidth,
-                         cut = cut, scale = scale, split = split, offset = offset, ax =ax, **kwcloud)
+                         cut = cut, scale = scale, split = split, offset = offset, ax = ax, **kwcloud)
 
-    # Draw boxplot
+    # Draw umberella/boxplot
     sns.boxplot   (x = x, y = y, hue = hue, data = data, orient = orient, width = width_box,
                          order = order, hue_order = hue_order,
                          color = boxcolor, showcaps = True, boxprops = boxprops,
-                         palette = palette, whiskerprops = {'linewidth':2, "zorder":10},
-                         saturation = 1, dodge = dodge, ax =ax, **kwbox)
+                         palette = palette, dodge = dodge, ax =ax, **kwbox)
 
     # Set alpha of the two
     if not alpha is None:
         _ = plt.setp(ax.collections + ax.artists, alpha = alpha)
 
-    # Draw stripplot
+    # Draw rain/stripplot
     ax =  stripplot (x = x, y = y, hue = hue, data = data, orient = orient,
-                    order = order, hue_order = hue_order, palette = palette, move = move,
-                    edgecolor = "white", size = point_size, jitter = jitter, zorder = 0, dodge = dodge,
-                    width = width_box, ax =ax, **kwrain)
+                    order = order, hue_order = hue_order, palette = palette,
+                    move = move, size = point_size, jitter = jitter, dodge = dodge,
+                    width = width_box, ax = ax, **kwrain)
 
     # Add pointplot
     if pointplot:
         n_plots = 4
         if not hue is None:
             sns.pointplot(x = x, y = y, hue = hue, data = data,
-                          orient=orient, order = order, hue_order = hue_order,
-                          dodge = width_box/2., capsize = 0., errwidth = 0.,
-                          palette = palette, zorder = 20, ax =ax, **kwrain)
+                          orient = orient, order = order, hue_order = hue_order,
+                          dodge = width_box/2., palette = palette, ax = ax, **kwpoint)
         else:
             sns.pointplot(x = x, y = y, hue = hue, data = data, color = linecolor,
-                           orient=orient, order = order, hue_order = hue_order,
-                           dodge = width_box/2., capsize = 0., errwidth = 0.,
-                           zorder = 20, ax =ax, **kwrain)
+                           orient = orient, order = order, hue_order = hue_order,
+                           dodge = width_box/2., ax = ax, **kwpoint)
 
     # Prune the legend, add legend title
     if not hue is None:
