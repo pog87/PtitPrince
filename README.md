@@ -39,14 +39,21 @@ I found a tweet asking for a .py version of the RainCloud plot, and I agreed to 
 
 Then I replicated the plots from the original post by [Micah Allen](https://micahallen.org/2018/03/15/introducing-raincloud-plots/), using Jupyter.
 
+### Changelog
 
+#### v.0.2.x
+
+    * PtitPrince now relies on seaborn 0.10 and numpy >= 1.13
+    * kwargs can be passed to the [cloud (default), boxplot, rain/stripplot, pointplot]
+                     by preponing [cloud_, box_, rain_, point_] to the argument name.
+    * End of support for python2, now the support covers python>=3.6
 
 ## Plans for the future:
 
  * ~~ask seaborn mantainers to add this new plot type~~ (not gonna happen)
  * ~~add a "move" option in seabon to control the positioning of each plot, as in ggplot2.~~ (either, added in ptitprince)
  * ~~get RainCloud published~~ (done!)
- * add logarithic density estimate (LDE) to the otions for the cloud
+ * add logarithic density estimate (LDE) to the options for the cloud
 
 ------
 [![Binder](https://img.shields.io/badge/binder%20tutorial-python-fb62f6.svg)](https://mybinder.org/v2/gh/RainCloudPlots/RainCloudPlots/master?filepath=tutorial_python%2Fraincloud_tutorial_python.ipynb)
