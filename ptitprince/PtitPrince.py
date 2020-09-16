@@ -17,7 +17,9 @@ import seaborn as sns
 #from seaborn.external.six.moves import range
 
 from seaborn import utils
-from seaborn.utils import iqr, categorical_order, remove_na
+from seaborn._core import categorical_order
+from scipy.stats import iqr
+from seaborn.utils import remove_na
 from seaborn.algorithms import bootstrap
 from seaborn.palettes import color_palette, husl_palette, light_palette, dark_palette
 from seaborn.axisgrid import FacetGrid, _facet_docs
@@ -26,7 +28,7 @@ from seaborn.categorical import *
 from seaborn.categorical import _CategoricalPlotter, _CategoricalScatterPlotter,  _categorical_docs
 
 __all__ = [ "half_violinplot", "stripplot", "RainCloud"]
-__version__ = '0.2.3'
+__version__ = '0.2.4'
 
 class _StripPlotter(_CategoricalScatterPlotter):
     """1-d scatterplot with categorical organization."""
