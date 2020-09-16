@@ -28,7 +28,7 @@ from seaborn.categorical import *
 from seaborn.categorical import _CategoricalPlotter, _CategoricalScatterPlotter,  _categorical_docs
 
 __all__ = [ "half_violinplot", "stripplot", "RainCloud"]
-__version__ = '0.2.4'
+__version__ = '0.2.5'
 
 class _StripPlotter(_CategoricalScatterPlotter):
     """1-d scatterplot with categorical organization."""

@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='ptitprince',
-      version='0.2.4',
+      version='0.2.5',
       description='A Python implementation of Rainclouds, originally on R, ggplot2. Written on top of seaborn.',
       url='http://github.com/pog87/PtitPrince',
       author='Davide Poggiali',
