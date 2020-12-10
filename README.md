@@ -14,7 +14,11 @@ or via conda
 conda install -c pog87 ptitprince
 ```
 
-or cloning this repo in your working directory.
+or cloning this repo in your working directory and run the usual
+
+```
+python setup.py install
+```
 
 -----
 ## Academic use
