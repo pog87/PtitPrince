@@ -42,7 +42,7 @@ This is a Python version of the "Raincloud plot" (or "PetitPrince plot", dependi
 The Raincloud plot is a variant of the violin plot written in R ggplot2 by [Micah Allen](https://micahallen.org/2018/03/15/introducing-raincloud-plots/).
 
 I found a tweet asking for a Python version of the Raincloud plot, and I agreed to give it a try.
-Alas, the Python version for ggplot2 ([plotnine](https://github.com/has2k1/plotnine)) does not allow to create new styles in a confortable way.
+Alas, the Python version for ggplot2 ([plotnine](https://github.com/has2k1/plotnine)) does not allow to create new styles in a comfortable way.
 So I decided to write this package using the [seaborn](https://seaborn.pydata.org/) library as a foundation.
 
 Then I replicated the plots from the original post by [Micah Allen](https://micahallen.org/2018/03/15/introducing-raincloud-plots/), in Jupyter Notebooks and transformed that code into a Python package.
