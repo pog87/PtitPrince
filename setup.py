@@ -36,5 +36,3 @@ setup(name='ptitprince',
           'cython'
       ],
       zip_safe=False)
-
-
