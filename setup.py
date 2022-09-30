@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='ptitprince',
-      version='0.2.5',
+      version='0.2.6',
       description='A Python implementation of Rainclouds, originally on R, ggplot2. Written on top of seaborn.',
       long_description=open('README.md').read(),
       long_description_content_type='text/markdown',      
@@ -28,9 +28,9 @@ setup(name='ptitprince',
           'Operating System :: MacOS',
       ],      
       install_requires=[
-          'seaborn>=0.11',
+          'seaborn==0.11',
           'matplotlib',
-          'numpy>=1.13',
+          'numpy>=1.16',
           'scipy',
           'PyHamcrest>=1.9.0',
           'cython'
