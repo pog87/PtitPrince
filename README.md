@@ -63,4 +63,5 @@ Since then, the package has received some publicity, and is for example listed i
  * ~~ask seaborn mantainers to add this new plot type~~ (not gonna happen)
  * ~~add a "move" option in seabon to control the positioning of each plot, as in ggplot2.~~ (either, added in ptitprince)
  * ~~get RainCloud published~~ (done!)
- * add logarithic density estimate (LDE) to the options for the cloud
+ * add logarithmic density estimate (LDE) to the options for the cloud
+ * add the repeated measure feature
