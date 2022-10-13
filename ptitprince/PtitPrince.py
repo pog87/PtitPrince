@@ -1,13 +1,12 @@
 from __future__ import division
-import numpy as np
-from scipy import stats
-import matplotlib as mpl
-import matplotlib.pyplot as plt
+
 import warnings
 
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
-from scipy.stats import iqr
-
+from scipy import stats
 from seaborn.categorical import *
 from seaborn.categorical import _CategoricalPlotter, _CategoricalScatterPlotter
 
@@ -534,7 +533,7 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
         """Draw boxplot information at center of the density."""
         # Compute the boxplot statistics
         q25, q50, q75 = np.percentile(data, [25, 50, 75])
-        whisker_lim = 1.5 * iqr(data)
+        whisker_lim = 1.5 * stats.iqr(data)
         h1 = np.min(data[data >= (q25 - whisker_lim)])
         h2 = np.max(data[data <= (q75 + whisker_lim)])
 
