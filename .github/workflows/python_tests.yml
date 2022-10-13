@@ -1,0 +1,50 @@
+name: Python tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  create:
+    branches: [master]
+    tags: ['**']
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest]
+        python-version: [3.9]
+
+    runs-on: ${{ matrix.platform }}
+
+    env:
+      TZ: Europe/Berlin
+      FORCE_COLOR: true
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - uses: actions/cache@v3
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ env.pythonLocation }}-${{ hashFiles('setup.py') }}-${{ hashFiles('requirements.txt') }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -e .
+
+    - name: Test RainCloud_Plot.ipynb
+      run: |
+        jupyter nbconvert --to notebook --ExecutePreprocessor.kernel_name=python3 --execute RainCloud_Plot.ipynb
+
+    - name: Test tutorial_python/raincloud_tutorial_python.ipynb
+      run: |
+        jupyter nbconvert --to notebook --ExecutePreprocessor.kernel_name=python3 --execute tutorial_python/raincloud_tutorial_python.ipynb
