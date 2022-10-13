@@ -1,34 +1,18 @@
 from __future__ import division
-from textwrap import dedent
-import colorsys
-import numpy as np
-from scipy import stats
-import pandas as pd
-import matplotlib as mpl
-from matplotlib.collections import PatchCollection
-import matplotlib.patches as Patches
-import matplotlib.pyplot as plt
-import matplotlib.collections as clt
+
 import warnings
 
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
-
-#from seaborn.external.six import string_types
-#from seaborn.external.six.moves import range
-
-from seaborn import utils
-from seaborn._core import categorical_order
-from scipy.stats import iqr
-from seaborn.utils import remove_na
-from seaborn.algorithms import bootstrap
-from seaborn.palettes import color_palette, husl_palette, light_palette, dark_palette
-from seaborn.axisgrid import FacetGrid, _facet_docs
-
+from scipy import stats
 from seaborn.categorical import *
-from seaborn.categorical import _CategoricalPlotter, _CategoricalScatterPlotter,  _categorical_docs
+from seaborn.categorical import _CategoricalPlotter, _CategoricalScatterPlotter
 
-__all__ = [ "half_violinplot", "stripplot", "RainCloud"]
+__all__ = ["half_violinplot", "stripplot", "RainCloud"]
 __version__ = '0.2.6'
+
 
 class _StripPlotter(_CategoricalScatterPlotter):
     """1-d scatterplot with categorical organization."""
@@ -159,7 +143,7 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
             if self.plot_hues is None:
 
                 # Strip missing datapoints
-                kde_data = remove_na(group_data)
+                kde_data = sns.utils.remove_na(group_data)
 
                 # Handle special case of no data at this level
                 if kde_data.size == 0:
@@ -208,7 +192,7 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
                     hue_mask = self.plot_hues[i] == hue_level
 
                     # Strip missing datapoints
-                    kde_data = remove_na(group_data[hue_mask])
+                    kde_data = sns.utils.remove_na(group_data[hue_mask])
 
                     # Handle special case of no data at this level
                     if kde_data.size == 0:
@@ -391,7 +375,7 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
                     continue
 
                 # Get a nan-free vector of datapoints
-                violin_data = remove_na(group_data)
+                violin_data = sns.utils.remove_na(group_data)
 
                 # Draw box and whisker information
                 if self.inner.startswith("box"):
@@ -460,7 +444,7 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
 
                         # Get a nan-free vector of datapoints
                         hue_mask = self.plot_hues[i] == hue_level
-                        violin_data = remove_na(group_data[hue_mask])
+                        violin_data = sns.utils.remove_na(group_data[hue_mask])
 
                         # Draw quartile lines
                         if self.inner.startswith("quart"):
@@ -480,7 +464,7 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
                             continue
 
                         # Get the whole vector for this group level
-                        violin_data = remove_na(group_data)
+                        violin_data = sns.utils.remove_na(group_data)
 
                         # Draw box and whisker information
                         if self.inner.startswith("box"):
@@ -507,7 +491,7 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
 
                         # Get a nan-free vector of datapoints
                         hue_mask = self.plot_hues[i] == hue_level
-                        violin_data = remove_na(group_data[hue_mask])
+                        violin_data = sns.utils.remove_na(group_data[hue_mask])
 
                         # Draw box and whisker information
                         if self.inner.startswith("box"):
@@ -549,7 +533,7 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
         """Draw boxplot information at center of the density."""
         # Compute the boxplot statistics
         q25, q50, q75 = np.percentile(data, [25, 50, 75])
-        whisker_lim = 1.5 * iqr(data)
+        whisker_lim = 1.5 * stats.iqr(data)
         h1 = np.min(data[data >= (q25 - whisker_lim)])
         h2 = np.max(data[data <= (q75 + whisker_lim)])
 
@@ -643,7 +627,6 @@ class _Half_ViolinPlotter(_CategoricalPlotter):
             ax.invert_yaxis()
 
 
-
 def stripplot(x=None, y=None, hue=None, data=None, order=None, hue_order=None,
               jitter=True, dodge=False, orient=None, color=None, palette=None, move = 0,
               size=5, edgecolor="gray", linewidth=0, ax=None, width=.8, **kwargs):
@@ -696,7 +679,7 @@ def RainCloud(x = None, y = None, hue = None, data = None,
               palette = "Set2", bw = .2, linewidth = 1, cut = 0.,
               scale = "area", jitter = 1, move = 0., offset = None,
               point_size = 3, ax = None, pointplot = False,
-              alpha = None, dodge = False, linecolor = 'red', **kwargs ):
+              alpha = None, dodge = False, linecolor = 'red', **kwargs):
 
     '''Draw a Raincloud plot of measure `y` of different categories `x`. Here `x` and `y` different columns of the pandas dataframe `data`.
 
@@ -724,46 +707,45 @@ def RainCloud(x = None, y = None, hue = None, data = None,
     by preponing [cloud_, box_, rain_ point_] to the argument name.
     '''
 
-    if orient == 'h': #swap x and y
+    if orient == 'h':  # swap x and y
         x, y = y, x
     if ax is None:
         ax = plt.gca()
-        #f, ax = plt.subplots(figsize = figsize) old version had this
+        # f, ax = plt.subplots(figsize = figsize) old version had this
 
     if offset is None:
-        offset = max(width_box/1.8,.15) + .05
+        offset = max(width_box/1.8, .15) + .05
     n_plots = 3
     split = False
     boxcolor = "black"
-    boxprops = {'facecolor':'none', "zorder":10}
-    if not hue is None:
+    boxprops = {'facecolor': 'none', "zorder": 10}
+    if hue is not None:
         split = True
         boxcolor = palette
-        boxprops = {"zorder":10}
-
+        boxprops = {"zorder": 10}
 
     kwcloud = dict()
-    kwbox   = dict(saturation = 1, whiskerprops = {'linewidth':2, "zorder":10} )
+    kwbox   = dict(saturation = 1, whiskerprops = {'linewidth': 2, "zorder": 10})
     kwrain  = dict(zorder = 0, edgecolor = "white")
     kwpoint = dict(capsize = 0., errwidth = 0., zorder = 20)
     for key, value in kwargs.items():
         if "cloud_" in key:
-            kwcloud[key.replace("cloud_","")] = value
+            kwcloud[key.replace("cloud_", "")] = value
         elif "box_" in key:
-            kwbox[key.replace("box_","")] = value
+            kwbox[key.replace("box_", "")] = value
         elif "rain_" in key:
-            kwrain[key.replace("rain_","")] = value
+            kwrain[key.replace("rain_", "")] = value
         elif "point_" in key:
-            kwpoint[key.replace("point_","")] = value
+            kwpoint[key.replace("point_", "")] = value
         else:
             kwcloud[key] = value
 
     # Draw cloud/half-violin
     half_violinplot(x = x, y = y, hue = hue, data = data,
-                         order = order, hue_order = hue_order,
-                         orient = orient, width = width_viol,
-                         inner = None, palette = palette, bw = bw,  linewidth = linewidth,
-                         cut = cut, scale = scale, split = split, offset = offset, ax = ax, **kwcloud)
+                    order = order, hue_order = hue_order,
+                    orient = orient, width = width_viol,
+                    inner = None, palette = palette, bw = bw,  linewidth = linewidth,
+                    cut = cut, scale = scale, split = split, offset = offset, ax = ax, **kwcloud)
 
     # Draw umberella/boxplot
     sns.boxplot   (x = x, y = y, hue = hue, data = data, orient = orient, width = width_box,
