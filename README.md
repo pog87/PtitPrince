@@ -1,3 +1,4 @@
+[![Python tests](https://github.com/pog87/PtitPrince/actions/workflows/python_tests.yml/badge.svg)](https://github.com/pog87/PtitPrince/actions/workflows/python_tests.yml)
 [![Latest PyPI release](https://img.shields.io/pypi/v/ptitprince.svg)](https://pypi.org/project/ptitprince/)
 [![Downloads](https://pepy.tech/badge/ptitprince)](https://pepy.tech/project/ptitprince)
 [![Latest conda-forge release](https://img.shields.io/conda/vn/conda-forge/ptitprince.svg)](https://anaconda.org/conda-forge/ptitprince/)
@@ -32,12 +33,12 @@ python setup.py install
 
 To **cite Raincloud plots** please use the following information:
 
-> Allen M, Poggiali D, Whitaker K et al. Raincloud plots: a multi-platform tool for robust data visualization [version 2; peer review: 2 approved]. Wellcome Open Res 2021, 4:63 (https://doi.org/10.12688/wellcomeopenres.15191.2) 
+> Allen M, Poggiali D, Whitaker K et al. Raincloud plots: a multi-platform tool for robust data visualization [version 2; peer review: 2 approved]. Wellcome Open Res 2021, 4:63 (https://doi.org/10.12688/wellcomeopenres.15191.2)
 
 ![output](output_4_0.png)
 
 ## History of this project
- 
+
 This is a Python version of the "Raincloud plot" (or "PetitPrince plot", depending on the orientation) from R (under ggplot2) to Python.
 The Raincloud plot is a variant of the violin plot written in R ggplot2 by [Micah Allen](https://web.archive.org/web/20210131133630/https://micahallen.org/2018/03/15/introducing-raincloud-plots/).
 I found a tweet asking for a Python version of the Raincloud plot, and I agreed to give it a try.
