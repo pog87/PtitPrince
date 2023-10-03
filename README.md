@@ -29,6 +29,12 @@ or by cloning this repository and running the following from the root of it:
 python setup.py install
 ```
 
+or directly from GitHub
+
+```
+pip install git+https://github.com/pog87/PtitPrince
+```
+
 ## Academic use
 
 To **cite Raincloud plots** please use the following information:
