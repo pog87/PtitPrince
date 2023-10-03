@@ -2,6 +2,7 @@
 [![Latest PyPI release](https://img.shields.io/pypi/v/ptitprince.svg)](https://pypi.org/project/ptitprince/)
 [![Downloads](https://pepy.tech/badge/ptitprince)](https://pepy.tech/project/ptitprince)
 [![Latest conda-forge release](https://img.shields.io/conda/vn/conda-forge/ptitprince.svg)](https://anaconda.org/conda-forge/ptitprince/)
+[![Downloads on conda](https://anaconda.org/conda-forge/ptitprince/badges/downloads.svg](https://anaconda.org/conda-forge/ptitprince/badges)
 [![Binder](https://img.shields.io/badge/binder%20tutorial-python-fb62f6.svg)](https://mybinder.org/v2/gh/RainCloudPlots/RainCloudPlots/master?filepath=tutorial_python%2Fraincloud_tutorial_python.ipynb)
 
 # PtitPrince
