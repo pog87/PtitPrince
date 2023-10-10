@@ -718,11 +718,11 @@ def RainCloud(x = None, y = None, hue = None, data = None,
     n_plots = 3
     split = False
     boxcolor = "black"
-    boxprops = {'facecolor': 'none', "zorder": 10}
+    boxprops = {'facecolor': 'none', "zorder": 10, "alpha": alpha}
     if hue is not None:
         split = True
         boxcolor = palette
-        boxprops = {"zorder": 10}
+        boxprops = {"zorder": 10, "alpha": alpha}
 
     kwcloud = dict()
     kwbox   = dict(saturation = 1, whiskerprops = {'linewidth': 2, "zorder": 10})
