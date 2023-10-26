@@ -767,9 +767,10 @@ def RainCloud(x = None, y = None, hue = None, data = None,
     if pointplot:
         n_plots = 4
         if not hue is None:
+            n_cat = len(np.unique(data[hue]))
             sns.pointplot(x = x, y = y, hue = hue, data = data,
                           orient = orient, order = order, hue_order = hue_order,
-                          dodge = width_box/2., palette = palette, ax = ax, **kwpoint)
+                          dodge = width_box * (1 - 1 / n_cat), palette = palette, ax = ax, **kwpoint)
         else:
             sns.pointplot(x = x, y = y, hue = hue, data = data, color = linecolor,
                            orient = orient, order = order, hue_order = hue_order,
