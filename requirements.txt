@@ -1,4 +1,4 @@
-matplotlib
+matplotlib<3.9
 numpy>=1.16
 scipy
 seaborn==0.11
