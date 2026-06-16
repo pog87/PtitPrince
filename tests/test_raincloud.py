@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import pytest
 
-from ptitprince import RainCloud
+from ptitprince import RainCloud, paired_raincloud
 
 
 class TestRainCloudBasic:
@@ -137,3 +138,123 @@ class TestRainCloudEdgeCases:
         y = np.array([1, 2, 3, 4, 5, 6])
         ax = RainCloud(x=x, y=y)
         assert ax is not None
+
+
+class TestPairedRaincloud:
+    """Test the dedicated repeated-measures function `paired_raincloud`."""
+
+    def _baseline_line_count(self, data, **kwargs):
+        """Lines drawn by a plain RainCloud (boxplot artifacts, no subject lines)."""
+        fig, ax = plt.subplots()
+        RainCloud(x="condition", y="score", data=data, order=["pre", "post"], ax=ax, **kwargs)
+        n = len(ax.lines)
+        plt.close(fig)
+        return n
+
+    def test_adds_one_line_per_subject(self, paired_data):
+        base = self._baseline_line_count(paired_data, orient="h")
+        fig, ax = plt.subplots()
+        paired_raincloud(
+            x="condition",
+            y="score",
+            data=paired_data,
+            id="subject",
+            order=["pre", "post"],
+            orient="h",
+            ax=ax,
+        )
+        added = len(ax.lines) - base
+        plt.close(fig)
+        assert added == paired_data["subject"].nunique()
+
+    def test_works_vertical(self, paired_data):
+        base = self._baseline_line_count(paired_data, orient="v")
+        fig, ax = plt.subplots()
+        paired_raincloud(
+            x="condition",
+            y="score",
+            data=paired_data,
+            id="subject",
+            order=["pre", "post"],
+            orient="v",
+            ax=ax,
+        )
+        added = len(ax.lines) - base
+        plt.close(fig)
+        assert added == paired_data["subject"].nunique()
+
+    def test_raincloud_alone_draws_no_subject_lines(self, paired_data):
+        """A plain RainCloud (no paired function) draws no per-subject lines."""
+        fig, ax = plt.subplots()
+        RainCloud(
+            x="condition", y="score", data=paired_data, order=["pre", "post"], orient="h", ax=ax
+        )
+        # only boxplot Line2D artifacts, no subject lines
+        n_box_lines = len(ax.lines)
+        plt.close(fig)
+        assert n_box_lines < paired_data["subject"].nunique()
+
+    def test_missing_observations_do_not_error(self, paired_data):
+        """NaN measurements should break that subject's line, not raise."""
+        df = paired_data.copy()
+        df.loc[(df.condition == "post") & df.subject.isin(["s0", "s1"]), "score"] = np.nan
+        fig, ax = plt.subplots()
+        paired_raincloud(
+            x="condition",
+            y="score",
+            data=df,
+            id="subject",
+            order=["pre", "post"],
+            orient="h",
+            ax=ax,
+        )
+        plt.close(fig)  # success = no exception
+
+    def test_hue_and_dodge_raise(self, paired_data):
+        """hue/dodge are unsupported and should raise, not draw wrong lines."""
+        df = paired_data.copy()
+        df["arm"] = (["A", "B"] * len(df))[: len(df)]
+        with pytest.raises(ValueError, match="hue.*dodge"):
+            paired_raincloud(x="condition", y="score", data=df, id="subject", hue="arm", orient="h")
+        with pytest.raises(ValueError, match="hue.*dodge"):
+            paired_raincloud(
+                x="condition", y="score", data=paired_data, id="subject", dodge=True, orient="h"
+            )
+
+    def test_requires_string_columns(self, paired_data):
+        """Non-column-name inputs should raise a clear error."""
+        with pytest.raises(ValueError):
+            paired_raincloud(x="condition", y="score", data=paired_data, id=None)
+
+    def test_line_style_kwargs_accepted(self, paired_data):
+        fig, ax = plt.subplots()
+        paired_raincloud(
+            x="condition",
+            y="score",
+            data=paired_data,
+            id="subject",
+            order=["pre", "post"],
+            orient="h",
+            line_color="steelblue",
+            line_alpha=0.6,
+            line_width=1.0,
+            ax=ax,
+        )
+        plt.close(fig)  # success = no exception
+
+    def test_forwards_kwargs_to_raincloud(self, paired_data):
+        """Styling kwargs (e.g. move, point_size) pass through to RainCloud."""
+        fig, ax = plt.subplots()
+        paired_raincloud(
+            x="condition",
+            y="score",
+            data=paired_data,
+            id="subject",
+            order=["pre", "post"],
+            orient="h",
+            move=0.2,
+            point_size=4,
+            ax=ax,
+        )
+        assert len(ax.lines) >= paired_data["subject"].nunique()
+        plt.close(fig)

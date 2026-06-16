@@ -12,7 +12,7 @@ from scipy import stats
 from seaborn.categorical import *
 from seaborn.categorical import _CategoricalPlotter  # , _CategoricalScatterPlotter
 
-__all__ = ["half_violinplot", "stripplot", "RainCloud"]
+__all__ = ["half_violinplot", "stripplot", "RainCloud", "paired_raincloud"]
 __version__ = "0.3.1"
 
 # Define a type alias for data inputs for reusability
@@ -935,6 +935,72 @@ def half_violinplot(
     return ax
 
 
+def _draw_repeated_measures_lines(
+    ax: matplotlib.axes.Axes,
+    rain_collections: list,
+    data: pd.DataFrame,
+    id_col: str,
+    cat_col: str,
+    num_col: str,
+    order: Optional[list],
+    orient: str,
+    line_color: str,
+    line_alpha: float,
+    line_width: float,
+) -> None:
+    """Connect each subject's rain points across categories (paired data).
+
+    The rain is drawn by seaborn's stripplot, which does not expose the
+    jittered coordinates directly. We recover them from the PathCollection
+    offsets emitted by the strip call and match each point back to its subject
+    using the within-category row order of ``data`` (seaborn preserves it).
+
+    Assumes no ``hue``/``dodge`` on the rain (the caller enforces this): with
+    dodged sub-groups the point-to-subject mapping would be ambiguous.
+    """
+    # Categorical axis: x (col 0) for vertical, y (col 1) for horizontal.
+    cat_axis = 1 if orient == "h" else 0
+
+    # Gather all plotted rain offsets in plot order.
+    offsets = []
+    for coll in rain_collections:
+        if not hasattr(coll, "get_offsets"):
+            continue
+        off = np.asarray(coll.get_offsets())
+        if off.size:
+            offsets.append(off)
+    if not offsets:
+        return
+    offsets = np.concatenate(offsets, axis=0)
+
+    # Category order: explicit `order`, else first-seen order in the data.
+    if order is None:
+        order = list(pd.unique(data[cat_col]))
+
+    # Assign every offset to a category by rounding its categorical coordinate
+    # (jitter is small relative to the unit spacing between categories).
+    cat_index = np.rint(offsets[:, cat_axis]).astype(int)
+
+    # Per category, the offsets appear in the same row order as `data` rows for
+    # that category. Zip them to recover (subject -> point) within each level.
+    subject_points: dict = {}  # subject -> list of (cat_pos_in_order, x, y)
+    for k, level in enumerate(order):
+        # seaborn drops NaN measurements, so filter them here to keep the
+        # within-category row order aligned with the plotted offsets.
+        level_rows = data[(data[cat_col] == level) & data[num_col].notna()]
+        level_offsets = offsets[cat_index == k]
+        n = min(len(level_rows), len(level_offsets))
+        for row, point in zip(level_rows[id_col].to_numpy()[:n], level_offsets[:n]):
+            subject_points.setdefault(row, []).append((k, point[0], point[1]))
+
+    # Draw one polyline per subject, ordered by category position.
+    for pts in subject_points.values():
+        pts.sort(key=lambda t: t[0])
+        xs = [p[1] for p in pts]
+        ys = [p[2] for p in pts]
+        ax.plot(xs, ys, color=line_color, alpha=line_alpha, linewidth=line_width, zorder=1)
+
+
 def RainCloud(
     x: DataInput = None,
     y: DataInput = None,
@@ -1204,4 +1270,88 @@ def RainCloud(
         xlim[-1] -= (width_box + width_viol) / 4.0
         _ = ax.set_xlim(xlim)
 
+    return ax
+
+
+def paired_raincloud(
+    x: DataInput = None,
+    y: DataInput = None,
+    data: Optional[pd.DataFrame] = None,
+    id: DataInput = None,
+    order: Optional[list[str]] = None,
+    orient: str = "v",
+    line_color: str = "gray",
+    line_alpha: float = 0.3,
+    line_width: float = 0.5,
+    ax: Optional[matplotlib.axes.Axes] = None,
+    **kwargs: Any,
+) -> matplotlib.axes.Axes:
+    """Draw a repeated-measures ("paired") Raincloud plot.
+
+    Like `RainCloud`, but each subject's rain points are connected by a line
+    across categories, making within-subject change visible for paired /
+    pre-post / longitudinal designs.
+
+    Main inputs (mirroring `RainCloud`):
+        x           categorical column name in `data`
+        y           measure column name in `data`
+        data        input pandas dataframe
+        id          subject identifier: a column name in `data`. Each subject's
+                    rain points are connected across categories.
+        order       list, order of the categorical data
+        orient      string, vertical if "v" (default), horizontal if "h"
+        line_color  color of the connecting lines (default "gray")
+        line_alpha  opacity of the connecting lines (default 0.3)
+        line_width  width of the connecting lines (default 0.5)
+
+    Any other keyword arguments are forwarded to `RainCloud` (e.g. `move`,
+    `point_size`, `palette`, `cloud_`/`box_`/`rain_` styling).
+
+    `hue`/`dodge` are not supported: with dodged sub-groups the point-to-subject
+    mapping is ambiguous, so they raise `ValueError`. Use `RainCloud` for those.
+
+    Example:
+        >>> paired_raincloud(x="condition", y="score", data=df,
+        ...                   id="subject", orient="h")
+    """
+    if not isinstance(data, pd.DataFrame):
+        raise ValueError("`paired_raincloud` requires a pandas DataFrame `data`.")
+    if not (isinstance(x, str) and isinstance(y, str) and isinstance(id, str)):
+        raise ValueError(
+            "`paired_raincloud` requires `x`, `y`, and `id` to be column names (strings) in `data`."
+        )
+    if "hue" in kwargs or kwargs.get("dodge"):
+        raise ValueError(
+            "`paired_raincloud` does not support `hue`/`dodge`: the point-to-subject "
+            "mapping is ambiguous with dodged sub-groups. Use `RainCloud` instead."
+        )
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Draw the standard raincloud, then connect each subject's rain points.
+    n_before = len(ax.collections)
+    ax = RainCloud(x=x, y=y, data=data, order=order, orient=orient, ax=ax, **kwargs)
+
+    # The rain is the only PathCollection RainCloud adds (the cloud is a
+    # PolyCollection; the box is patches/lines), so recover the plotted, jittered
+    # points from those collections.
+    rain_collections = [
+        coll
+        for coll in ax.collections[n_before:]
+        if isinstance(coll, mpl.collections.PathCollection)
+    ]
+    _draw_repeated_measures_lines(
+        ax=ax,
+        rain_collections=rain_collections,
+        data=data,
+        id_col=id,
+        cat_col=x,
+        num_col=y,
+        order=order,
+        orient=orient,
+        line_color=line_color,
+        line_alpha=line_alpha,
+        line_width=line_width,
+    )
     return ax

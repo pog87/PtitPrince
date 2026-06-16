@@ -42,6 +42,23 @@ def simple_data():
     )
 
 
+@pytest.fixture
+def paired_data():
+    """Repeated-measures sample: each subject measured pre and post."""
+    np.random.seed(42)
+    n = 30
+    subjects = [f"s{i}" for i in range(n)]
+    pre = np.random.normal(50, 8, n)
+    post = pre + np.random.normal(6, 5, n)  # within-subject change
+    return pd.DataFrame(
+        {
+            "subject": subjects * 2,
+            "condition": ["pre"] * n + ["post"] * n,
+            "score": np.concatenate([pre, post]),
+        }
+    )
+
+
 @pytest.fixture(autouse=True)
 def cleanup_plots():
     """Automatically close all plots after each test."""
